@@ -17,3 +17,5 @@ It may be necessary to Update the database when the project is cloned. Use the f
 ```dotnet ef database update -s ../PhoneBook/PhoneBook.csproj```
 
 The project will definitely use a couple of unit tests, (to be added).
+
+### Application Screen images are included in the project files, e.g PhoneBook2.PNG
