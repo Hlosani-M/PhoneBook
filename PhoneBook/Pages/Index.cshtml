@@ -1,0 +1,87 @@
+﻿@page 
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<img class="mx-auto mb-3 d-block icon-img" src="/Images/phonebook.svg" alt="phone-book logo" />
+<div class="row text-center">
+    <div id="edit-form" class="col-md-6 p-4 form-container">
+        <section>
+            @if (Model.Message != null)
+            {
+                <div class="alert alert-info">@Model.Message</div>
+            }
+            <form method="post">
+                <h4 class="font-weight-light mb-3">@Model.FormTitle</h4>
+                <input type="hidden" asp-for="Entry.Id" />
+                <div class="form-group">
+                    <input asp-for="Entry.Name" class="form-control" placeholder="Name" />
+                    <span asp-validation-for="Entry.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Entry.PhoneNumber" class="form-control" placeholder="Phone Number" />
+                    <span asp-validation-for="Entry.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary form-control">Save</button>
+                </div>
+            </form>
+        </section>
+    </div>
+    @if (Model.ShowAllEntries)
+    {
+        <div class="col-md-6 p-4">
+            <section>
+                <h4 class="font-weight-light mb-3">Registered Entries</h4>
+                <form method="get" id="entry-form">
+                    <div class="input-group mb-3">
+                        <input type="search" class="form-control" asp-for="SearchTerm" placeholder="Search entries..." aria-label="Recipient's username">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                @if (Model.SearchMessage != null)
+                {
+                    <div class="alert alert-info">@Model.SearchMessage</div>
+                }
+                <div class="form-group border-light">
+                    <table class="table">
+                        @if (Model.Entries != null)
+                        {
+                            foreach (var entry in @Model.Entries)
+                            {
+                                <tr>
+                                    <td>@entry.Name</td>
+                                    <td>@entry.PhoneNumber</td>
+                                    <td>
+                                        <span id="deleteEditSpan_@entry.Id">
+                                            <a class="btn btn-outline-info" asp-page="/Index" asp-route-entryId="@entry.Id" asp-route-edit="true">Edit</a>
+                                            <a class="btn btn-outline-danger ml-2" onclick="confirmDelete(@entry.Id, true)">Delete</a>
+                                        </span>
+                                        <div id="confirmDeleteSpan_@entry.Id" style="display: none;">
+                                            <span class="text-danger font-weight-bold">Delete?</span>
+                                            <form asp-page-handler="delete" asp-route-entryId="@entry.Id" method="post">
+                                                <button class="btn btn-danger ml-2">Yes</button>
+                                            </form>
+                                            <a href="#" class="btn btn-primary ml-2" onclick="confirmDelete(@entry.Id, false)">No</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </section>
+        </div>
+
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/site.js"></script>
+}
